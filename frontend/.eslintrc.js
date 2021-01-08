@@ -6,14 +6,15 @@ module.exports = {
     'plugin:vue/base',
     'plugin:vue/essential',
     '@vue/airbnb',
-    // '../.eslintrc-rules.js',
+    '../.eslintrc-rules.js',
   ],
+  parser: 'babel-eslint',
   parserOptions: {
-    // parser: 'babel-eslint',
+    sourceType: 'module',
+    allowImportExportEverywhere: true
   },
   ignorePatterns: ['**/_formulas/*'],
   rules: {
-    'no-console': 'off',
     'vue/max-attributes-per-line': [
       'error',
       {
