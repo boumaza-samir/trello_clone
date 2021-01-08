@@ -14,7 +14,6 @@
           transition="scale-transition"
           width="40"
         />
-
         <v-img
           alt="Vuetify Name"
           class="shrink mt-1 hidden-sm-and-down"
@@ -28,33 +27,53 @@
       <v-spacer />
 
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
+        v-if="!isAuthenticated"
         text
+        :to="'/signup'"
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+        Signup
+      </v-btn>
+      <v-btn
+        v-if="!isAuthenticated"
+        text
+        :to="'/login'"
+      >
+        login
+      </v-btn>
+      <v-btn
+        v-if="isAuthenticated"
+        text
+        :loading="isLogoutPending"
+        @click="logout"
+      >
+        Logout
       </v-btn>
     </v-app-bar>
 
     <v-main>
-      <HelloWorld />
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'App',
 
-  components: {
-    HelloWorld,
-  },
-
   data: () => ({
     //
   }),
+  computed: {
+    ...mapGetters('auth', ['isAuthenticated']),
+    ...mapState('auth', ['isLogoutPending'])
+  },
+  methods: {
+    async logout() {
+      await this.$store.dispatch('auth/logout');
+      this.$router.push('/login');
+    }
+  }
 };
 </script>

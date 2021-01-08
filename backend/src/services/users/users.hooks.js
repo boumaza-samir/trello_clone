@@ -3,7 +3,11 @@ const { authenticate } = require('@feathersjs/authentication').hooks;
 const {
   hashPassword, protect
 } = require('@feathersjs/authentication-local').hooks;
-
+const waitAlittle = () => {
+  return new Promise(
+    (resolve) => { setTimeout(() => { resolve(); }, 3000); }
+  );
+};
 module.exports = {
   before: {
     all: [],

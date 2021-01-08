@@ -1,18 +1,44 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="/img/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <v-data-table
+      :headers="headers"
+      :items="users"
+      class="elevation-1"
+      item-key="_id"
+      :loading="isUserLoading"
+      loading-text="Loading... Please wait"
+    />
   </div>
 </template>
 
 <script>
+
+import { mapState } from 'vuex';
+import { models } from 'feathers-vuex';
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld,
+  data: () => ({
+
+  }),
+  computed: {
+    ...mapState('users', { isUserLoading: 'isFindPending' }),
+
+    User: () => models.api.User,
+    users: vm => vm.User.findInStore().data,
+    headers() {
+      return [
+        { value: 'email', text: 'Email' },
+        { value: 'name', text: 'Name' },
+        { value: 'createdAt', text: 'Created' },
+        { value: 'updatedAt', text: 'Updated' }
+      ];
+    }
   },
+  created() {
+    this.User.find();
+  },
+
 };
 </script>
