@@ -8,7 +8,7 @@ module.exports = {
     '@vue/airbnb',
     '../.eslintrc-rules.js',
   ],
-  parser: 'babel-eslint',
+  parser: 'vue-eslint-parser',
   parserOptions: {
     sourceType: 'module',
     allowImportExportEverywhere: true

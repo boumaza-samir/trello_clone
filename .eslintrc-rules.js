@@ -3,8 +3,8 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
-    'no-console': ['production', 'staging'].includes(process.env.NODE_ENV) ? 'error' : 'warning',
-    'no-debugger': ['production', 'staging'].includes(process.env.NODE_ENV) ? 'error' : 'warning',
+    'no-console': ['production', 'staging'].includes(process.env.NODE_ENV) ? 'error' : 'warn',
+    'no-debugger': ['production', 'staging'].includes(process.env.NODE_ENV) ? 'error' : 'warn',
     'arrow-parens': ['error', 'as-needed'],
     'comma-dangle': ['error', 'only-multiline'],
     'max-len': [
