@@ -1,44 +1,71 @@
-<template>
-  <div class="home">
-    <v-data-table
-      :headers="headers"
-      :items="users"
-      class="elevation-1"
-      item-key="_id"
-      :loading="isUserLoading"
-      loading-text="Loading... Please wait"
-    />
+611<template>
+  <div>
+    <v-row>
+      <v-col
+        v-for="(board,index) in boards"
+        :key="board.name + index"
+        md="2"
+        cols="6"
+      >
+        <board :board="board" />
+      </v-col>
+      <v-col
+        v-if="newboard"
+        class="d-flex  align-center"
+        md="2"
+        cols="6"
+      >
+        <v-btn
+          fab
+          dark
+          color="indigo"
+          @click="addBoard()"
+        >
+          <v-icon dark>
+            mdi-plus
+          </v-icon>
+        </v-btn>
+      </v-col>
+      <v-col
+        v-else
+        md="2"
+        cols="6"
+      >
+        <new-board-form @cancel="cancel" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
-
 import { mapState } from 'vuex';
 import { models } from 'feathers-vuex';
+import board from '@/components/board.vue';
+import newBoardForm from '@/components/NewBoardForm.vue';
 // @ is an alias to /src
 
 export default {
   name: 'Home',
+  components: { board, newBoardForm },
   data: () => ({
-
+    newboard: true,
   }),
   computed: {
     ...mapState('users', { isUserLoading: 'isFindPending' }),
 
-    User: () => models.api.User,
-    users: vm => vm.User.findInStore().data,
-    headers() {
-      return [
-        { value: 'email', text: 'Email' },
-        { value: 'name', text: 'Name' },
-        { value: 'createdAt', text: 'Created' },
-        { value: 'updatedAt', text: 'Updated' }
-      ];
-    }
+    Board: () => models.api.Board,
+    boards: vm => vm.Board.findInStore().data,
   },
   created() {
-    this.User.find();
+    this.Board.find();
   },
-
+  methods: {
+    cancel(value) {
+      this.newboard = value;
+    },
+    addBoard() {
+      this.newboard = false;
+    }
+  }
 };
 </script>

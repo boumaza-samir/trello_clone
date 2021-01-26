@@ -10,18 +10,11 @@
           alt="Vuetify Logo"
           class="shrink mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          src="@/assets/bewave.png"
           transition="scale-transition"
-          width="40"
+          width="50"
         />
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <span class="text-h4">Formation : Trello Clone</span>
       </div>
 
       <v-spacer />
@@ -40,18 +33,40 @@
       >
         login
       </v-btn>
-      <v-btn
-        v-if="isAuthenticated"
-        text
-        :loading="isLogoutPending"
-        @click="logout"
-      >
-        Logout
-      </v-btn>
-    </v-app-bar>
 
+      <v-menu
+        v-if="isAuthenticated"
+        bottom
+        left
+        offset-y
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-avatar
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-gravatar :email="user.email ? user.email : '' " />
+          </v-avatar>
+        </template>
+
+        <v-list class="pa-0">
+          <v-list-item>
+            <v-btn
+              class="pa-0 text-overline"
+              text
+              :loading="isLogoutPending"
+              @click="logout"
+            >
+              Logout<v-icon>mdi-logout</v-icon>
+            </v-btn>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
     <v-main>
-      <router-view />
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -67,7 +82,8 @@ export default {
   }),
   computed: {
     ...mapGetters('auth', ['isAuthenticated']),
-    ...mapState('auth', ['isLogoutPending'])
+    ...mapState('auth', ['isLogoutPending']),
+    ...mapState('auth', ['user']),
   },
   methods: {
     async logout() {
