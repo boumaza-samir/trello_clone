@@ -15,11 +15,10 @@
     <v-sheet>
       <v-text-field
         v-model="editBoard.name"
-
-        solo
+        class="text-h5"
         flat
         hide-details
-        label="edit board name"
+        solo
         @blur="updateBoard"
       />
     </v-sheet>
@@ -97,7 +96,7 @@ export default {
   },
   methods: {
     openBoard() {
-      this.$router.push({ name: 'board', params: { boardId: this.board._id } });
+      this.$router.push({ name: 'board', params: { boardId: this.board._id, img: this.editBoard.img } });
     },
     updateBoard() {
       const { Board } = models.api;

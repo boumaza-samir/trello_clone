@@ -1,118 +1,116 @@
 <template>
-  <v-card>
-    <v-card-title primary-title>
+  <v-card class="pa-2" color="#ebecf0">
+    <v-system-bar
+      color="#ebecf0"
+      dark
+      class="justify-space-between"
+    >
+      <v-icon color="black" @click="removeActivity()">
+        mdi-window-close
+      </v-icon>
+      <v-icon color="black">
+        mdi-dots-horizontal
+      </v-icon>
+    </v-system-bar>
+    <v-sheet>
       <v-text-field
-
-        class="justify-center pa-5"
+        v-model="editActivity.activityName"
+        background-color="#ebecf0"
+        class="text-subtitle-1"
+        solo
         flat
         hide-details
+        label="edit board name"
+        @blur="updateActivity"
       />
-    </v-card-title>
-    <v-card
-      class="mx-auto"
-
-      tile
+    </v-sheet>
+    <v-btn
+      block
+      x-small
+      text
+      elevation="0"
+      class="pa-1 text-left"
+      @click="addTask"
     >
-      <v-card-title primary-title>
-        Subtasks
-      </v-card-title>
-      <v-progress-linear color="green" height="10" :value="(selected.length/tasks.length)*100 ">
-        <span class="text-caption">{{ Math.ceil((selected.length/tasks.length)*100) }}%</span>
-      </v-progress-linear>
-      <v-list two-line>
-        <v-list-item-group
-          v-model="selected"
-          active-class="blue--text"
-          multiple
-        >
-          <template v-for="(task, index) in tasks">
-            <v-list-item :key="task.title">
-              <template v-slot:default="{ active }">
-                <v-list-item-content>
-                  <v-list-item-title v-text="task.title" />
-
-                  <v-list-item-subtitle
-                    class="text--primary"
-                    v-text="task.headline"
-                  />
-
-                  <v-list-item-subtitle v-text="task.subtitle" />
-                </v-list-item-content>
-
-                <v-list-item-action>
-                  <v-list-item-action-text v-text="task.action" />
-
-                  <v-icon
-                    v-if="!active"
-                    color="grey lighten-1"
-                  >
-                    mdi-check-outline
-                  </v-icon>
-
-                  <v-icon
-                    v-else
-                    color="green darken-3"
-                  >
-                    mdi-check
-                  </v-icon>
-                </v-list-item-action>
-              </template>
-            </v-list-item>
-
-            <v-divider
-              v-if="index < tasks.length - 1"
-              :key="index"
-            />
-          </template>
-        </v-list-item-group>
-      </v-list>
+      <v-icon small>
+        mdi-plus
+      </v-icon>
+      add task
+    </v-btn>
+    <newtaskform v-if="!newtask" :parent-activity="activity._id" @cancel="cancel" />
+    <v-card
+      v-for="(task,index) in tasks"
+      :key="index + uuid()"
+      class="my-2"
+      elevation="1"
+    >
+      <task
+        :task="task"
+      />
     </v-card>
   </v-card>
 </template>
 
 <script>
+import { models } from 'feathers-vuex';
+import { mapState } from 'vuex';
+import task from '@/components/Task.vue';
+import newtaskform from '@/components/newTaskForm.vue';
+
 export default {
   name: 'activity',
+
+  components: { task, newtaskform },
+  props: {
+    img: {
+      type: String,
+      default: ''
+    },
+    activity: {
+      Type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
-      selected: [2],
-      tasks: [
-        {
-          action: '15 min',
-          headline: '',
-          subtitle: '',
-          title: 'Ali Connors',
-        },
-        {
-          action: '2 hr',
-          headline: 'Summer BBQ',
-          subtitle: 'Wish I could come, but I\'m out of town this weekend.',
-          title: 'me, Scrott, Jennifer',
-        },
-        {
-          action: '6 hr',
-          headline: 'Oui oui',
-          subtitle: 'Do you have Paris recommendations? Have you ever been?',
-          title: 'Sandra Adams',
-        },
-        {
-          action: '12 hr',
-          headline: 'Birthday gift',
-          subtitle: 'Have any ideas about what we should get Heidi for her birthday?',
-          title: 'Trevor Hansen',
-        },
-        {
-          action: '18hr',
-          headline: 'Recipe to try',
-          subtitle: 'We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
-          title: 'Britta Holt',
-        },
-      ],
+      newtask: true,
+      editActivity: {},
     };
+  },
+
+  computed: {
+
+    ...mapState('auth', ['user']),
+    ...mapState('users', { isUserLoading: 'isFindPending' }),
+
+    Task: () => models.api.Task,
+    tasks: vm => vm.Task.findInStore({ query: { parentActivity: vm.activity._id } }).data,
+  },
+  created() {
+    const { Activities } = models.api;
+    this.editActivity = new Activities(this.activity);
+    this.Task.find();
+  },
+  methods: {
+    uuid() {
+      return Math.random().toString(36).slice(-6);
+    },
+    cancel(value) {
+      this.newtask = value;
+    },
+    addTask() {
+      this.newtask = !this.newtask;
+    },
+
+    updateActivity() {
+      this.editActivity.update();
+    },
+    removeActivity() {
+      this.editActivity.remove();
+    }
   }
 };
 </script>
 
 <style>
-
 </style>

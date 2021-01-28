@@ -1,4 +1,4 @@
-611<template>
+<template>
   <div>
     <v-row>
       <v-col
@@ -42,7 +42,6 @@ import { mapState } from 'vuex';
 import { models } from 'feathers-vuex';
 import board from '@/components/board.vue';
 import newBoardForm from '@/components/NewBoardForm.vue';
-// @ is an alias to /src
 
 export default {
   name: 'Home',
