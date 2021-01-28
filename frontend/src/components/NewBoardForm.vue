@@ -1,9 +1,9 @@
 <template>
   <v-card>
     <v-card-text>
-      <v-card-title primary-title class="text-uppercase">
-        add new board
-      </v-card-title>
+      <v-sheet class="text-h6">
+        Add new board
+      </v-sheet>
       <v-text-field
         v-model="newBoard.name"
         label="label"

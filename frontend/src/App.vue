@@ -64,9 +64,7 @@
       </v-menu>
     </v-app-bar>
     <v-main :style="`background-image: url(${this.$route.params.img});background-size: cover;`">
-      <v-container
-        fluid
-      >
+      <v-container fluid>
         <router-view />
       </v-container>
     </v-main>

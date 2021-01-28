@@ -1,38 +1,40 @@
 <template>
-  <v-row>
-    <v-col
-      v-for="(activity,index) in activities"
-      :key="index"
-      md="2"
-      cols="6"
-    >
-      <activity :activity="activity" />
-    </v-col>
-    <v-col
-      v-if="newActivity"
-      class="d-flex  align-center"
-      md="2"
-      cols="6"
-    >
-      <v-btn
-        fab
-        dark
-        color="indigo"
-        @click="addActivity()"
+  <div>
+    <v-row>
+      <v-col
+        v-for="(activity,index) in activities"
+        :key="index + uuid()"
+        md="2"
+        cols="6"
       >
-        <v-icon dark>
-          mdi-plus
-        </v-icon>
-      </v-btn>
-    </v-col>
-    <v-col
-      v-else
-      md="2"
-      cols="6"
-    >
-      <newActivity @cancel="cancel" />
-    </v-col>
-  </v-row>
+        <activity :activity="activity" />
+      </v-col>
+      <v-col
+        v-if="newActivity"
+        class="d-flex  align-center"
+        md="2"
+        cols="6"
+      >
+        <v-btn
+          fab
+          dark
+          color="indigo"
+          @click="addActivity()"
+        >
+          <v-icon dark>
+            mdi-plus
+          </v-icon>
+        </v-btn>
+      </v-col>
+      <v-col
+        v-else
+        md="2"
+        cols="6"
+      >
+        <newActivity @cancel="cancel" />
+      </v-col>
+    </v-row>
+  </div>
 </template>
 <script>
 import { mapState } from 'vuex';
@@ -52,8 +54,13 @@ export default {
     Activities: () => models.api.Activities,
     activities: vm => vm.Activities.findInStore({ query: { parentBoard: vm.$route.params.boardId } }).data,
   },
-
+  created() {
+    this.Activities.find();
+  },
   methods: {
+    uuid() {
+      return Math.random().toString(36).slice(-6);
+    },
     cancel(value) {
       this.newActivity = value;
     },

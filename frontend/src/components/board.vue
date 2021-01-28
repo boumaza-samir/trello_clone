@@ -5,7 +5,7 @@
       dark
       class="justify-space-between"
     >
-      <v-icon @click="removeBoard(board._id)">
+      <v-icon @click="removeBoard()">
         mdi-window-close
       </v-icon>
       <v-icon @click="bgChange">
@@ -92,27 +92,22 @@ export default {
     ...mapState('auth', ['user']),
   },
   created() {
-    Object.assign(this.editBoard, this.board);
+    const { Board } = models.api;
+    this.editBoard = new Board(this.board);
   },
   methods: {
     openBoard() {
       this.$router.push({ name: 'board', params: { boardId: this.board._id, img: this.editBoard.img } });
     },
     updateBoard() {
-      const { Board } = models.api;
       this.bgChange();
-      new Board(this.editBoard).update();
+      this.editBoard.update();
     },
     bgChange() {
       this.edit = !this.edit;
-      console.log(this.edit);
     },
-    removeBoard(value) {
-      const { Board } = models.api;
-      new Board({ id: value }).save()
-        .then(board => {
-          board.remove();
-        });
+    removeBoard() {
+      this.editBoard.remove();
     }
   }
 };

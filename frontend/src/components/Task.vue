@@ -13,6 +13,44 @@
         />
       </v-col>
       <v-col class="d-flex pa-0 justify-center align-center">
+        <v-dialog
+          transition="dialog-bottom-transition"
+          max-width="600"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              small
+              color="primary"
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-magnify
+            </v-icon>
+          </template>
+          <template v-slot:default="dialog">
+            <v-card>
+              <v-toolbar
+                color="primary"
+                dark
+              >
+                {{ editTask.taskName }}
+              </v-toolbar>
+              <v-card-text>
+                <div class="text-h2 pa-12">
+                  <subtasks />
+                </div>
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn
+                  text
+                  @click="dialog.value = false"
+                >
+                  Close
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
         <v-icon small @click="removeTask()">
           mdi-delete
         </v-icon>
@@ -23,8 +61,10 @@
 
 <script>
 import { models } from 'feathers-vuex';
+import subtasks from '@/components/Subtasks.vue';
 
 export default { name: 'task',
+  components: { subtasks },
   props: {
     task: {
       type: Object,

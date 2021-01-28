@@ -1,18 +1,28 @@
 <template>
   <v-card>
     <v-card-text>
-      <v-card-title primary-title class="text-uppercase">
-        add new task
-      </v-card-title>
+      <v-sheet class="text-h6">
+        Add new task
+      </v-sheet>
       <v-text-field
         v-model="newTask.taskName"
         label="label"
       />
       <v-card-actions class="justify-space-between">
-        <v-btn text color="error" @click="cancel">
+        <v-btn
+          small
+          text
+          color="error"
+          @click="cancel"
+        >
           cancel
         </v-btn>
-        <v-btn text color="success" @click="addNewTask">
+        <v-btn
+          small
+          text
+          color="success"
+          @click="addNewTask"
+        >
           save
         </v-btn>
       </v-card-actions>
