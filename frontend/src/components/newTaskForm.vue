@@ -59,7 +59,7 @@ export default {
     async addNewTask() {
       try {
         await this.newTask.create();
-        this.$emit('cancel', true);
+        this.cancel();
       } catch (error) {
         this.newBoardError = error.message;
       }

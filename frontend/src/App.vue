@@ -1,5 +1,8 @@
 <template>
-  <v-app>
+  <v-app
+    :style="`background-image: url('https://cdn.pixabay.com/photo/2013/07/13/12/08/background-159244__340.png')
+  ;background-size: cover;`"
+  >
     <v-app-bar
       app
       color="primary"
@@ -64,7 +67,9 @@
       </v-menu>
     </v-app-bar>
     <v-main :style="`background-image: url(${this.$route.params.img});background-size: cover;`">
-      <v-container fluid>
+      <v-container
+        fluid
+      >
         <router-view />
       </v-container>
     </v-main>

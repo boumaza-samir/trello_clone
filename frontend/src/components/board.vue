@@ -12,17 +12,16 @@
         mdi-dots-horizontal
       </v-icon>
     </v-system-bar>
-    <v-sheet>
-      <v-text-field
-        v-model="editBoard.name"
-        class="text-h5"
-        flat
-        hide-details
-        solo
-        @blur="updateBoard"
-      />
-    </v-sheet>
 
+    <v-text-field
+      v-model="editBoard.name"
+      class="text-h5"
+      flat
+      hide-details
+      solo
+      @blur="updateBoard()"
+    />
+    lol
     <v-card
       v-if="edit"
       height="250px"
@@ -69,14 +68,7 @@ export default {
   name: 'board',
 
   props: {
-    img: {
-      type: String,
-      default: ''
-    },
-    name: {
-      type: String,
-      default: ''
-    },
+
     board: {
       Type: Object,
       default: () => {}
@@ -84,6 +76,7 @@ export default {
   },
   data() {
     return {
+      test: {},
       editBoard: {},
       edit: false
     };
@@ -100,7 +93,7 @@ export default {
       this.$router.push({ name: 'board', params: { boardId: this.board._id, img: this.editBoard.img } });
     },
     updateBoard() {
-      this.bgChange();
+      console.log('lol', this.editBoard);
       this.editBoard.update();
     },
     bgChange() {

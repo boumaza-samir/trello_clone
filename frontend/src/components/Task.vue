@@ -14,7 +14,6 @@
       </v-col>
       <v-col class="d-flex pa-0 justify-center align-center">
         <v-dialog
-          transition="dialog-bottom-transition"
           max-width="600"
         >
           <template v-slot:activator="{ on, attrs }">
@@ -24,7 +23,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              mdi-magnify
+              mdi-card-text-outline
             </v-icon>
           </template>
           <template v-slot:default="dialog">
@@ -32,12 +31,13 @@
               <v-toolbar
                 color="primary"
                 dark
+                elevation="0"
               >
-                {{ editTask.taskName }}
+                <span class="text-h4">Task : {{ editTask.taskName }}</span>
               </v-toolbar>
               <v-card-text>
-                <div class="text-h2 pa-12">
-                  <subtasks />
+                <div class="text-h2 pa-1">
+                  <subtasks :task="task" />
                 </div>
               </v-card-text>
               <v-card-actions class="justify-end">

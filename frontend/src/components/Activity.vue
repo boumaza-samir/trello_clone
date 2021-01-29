@@ -8,9 +8,17 @@
       <v-icon color="black" @click="removeActivity()">
         mdi-window-close
       </v-icon>
-      <v-icon color="black">
-        mdi-dots-horizontal
-      </v-icon>
+
+      <v-chip
+        label
+        pill
+        small
+        class="ma-2 text-bold"
+        color="primary"
+      >
+        <strong v-if="tasks.length < 1">  {{ tasks.length }} task</strong>
+        <strong v-else>  {{ tasks.length }} tasks</strong>
+      </v-chip>
     </v-system-bar>
     <v-sheet>
       <v-text-field
@@ -38,16 +46,18 @@
       add task
     </v-btn>
     <newtaskform v-if="!newtask" :parent-activity="activity._id" @cancel="cancel" />
-    <v-card
-      v-for="(task,index) in tasks"
-      :key="index + uuid()"
-      class="my-2"
-      elevation="1"
-    >
-      <task
-        :task="task"
-      />
-    </v-card>
+    <draggable class="card">
+      <v-card
+        v-for="(task,index) in tasks"
+        :key="index + uuid()"
+        class="my-2"
+        elevation="1"
+      >
+        <task
+          :task="task"
+        />
+      </v-card>
+    </draggable>
   </v-card>
 </template>
 
@@ -56,11 +66,12 @@ import { models } from 'feathers-vuex';
 import { mapState } from 'vuex';
 import task from '@/components/Task.vue';
 import newtaskform from '@/components/newTaskForm.vue';
+import draggable from 'vuedraggable';
 
 export default {
   name: 'activity',
 
-  components: { task, newtaskform },
+  components: { task, newtaskform, draggable },
   props: {
     img: {
       type: String,

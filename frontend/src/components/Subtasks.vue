@@ -7,53 +7,36 @@
     <v-card-title primary-title>
       Subtasks
     </v-card-title>
-    <v-progress-linear color="green" height="10" :value="(selected.length/tasks.length)*100 ">
-      <span class="text-caption">{{ Math.ceil((selected.length/tasks.length)*100) }}%</span>
-    </v-progress-linear>
-    <v-list two-line>
+
+    <!--     <v-progress-linear color="green" height="10" :value="(selected.length/subtasks.length)*100 ">
+      <span class="text-caption">{{ Math.ceil((selected.length/subtasks.length)*100) }}%</span>
+    </v-progress-linear> -->
+
+    <v-btn block text @click="addSubtask">
+      <v-icon>mdi-plus</v-icon> new subtask
+    </v-btn>
+
+    <newSubtask v-if="!newSubtask" :task="task" @cancel="cancel" />
+
+    <v-list>
       <v-list-item-group
         v-model="selected"
         active-class="blue--text"
         multiple
       >
-        <template v-for="(task, index) in tasks">
-          <v-list-item :key="task.title">
-            <template v-slot:default="{ active }">
-              <v-list-item-content>
-                <v-list-item-title v-text="task.title" />
-
-                <v-list-item-subtitle
-                  class="text--primary"
-                  v-text="task.headline"
-                />
-
-                <v-list-item-subtitle v-text="task.subtitle" />
-              </v-list-item-content>
-
-              <v-list-item-action>
-                <v-list-item-action-text v-text="task.action" />
-
-                <v-icon
-                  v-if="!active"
-                  color="grey lighten-1"
-                >
-                  mdi-check-outline
-                </v-icon>
-
-                <v-icon
-                  v-else
-                  color="green darken-3"
-                >
-                  mdi-check
-                </v-icon>
-              </v-list-item-action>
-            </template>
+        <template
+          v-for="(subtask, index) in subtasks"
+        >
+          <v-list-item :key="uuid()+index">
+            <subtask
+              two-line
+              :subtask="subtask"
+            />
+            <v-divider
+              v-if="index < subtasks.length - 1"
+              :key="index"
+            />
           </v-list-item>
-
-          <v-divider
-            v-if="index < tasks.length - 1"
-            :key="index"
-          />
         </template>
       </v-list-item-group>
     </v-list>
@@ -61,46 +44,55 @@
 </template>
 
 <script>
+import newSubtask from '@/components/NewSubTaskForm.vue';
+import { models } from 'feathers-vuex';
+import { mapState } from 'vuex';
+import subtask from '@/components/SubTask.vue';
+
 export default {
   name: 'Subtasks',
+  components: { newSubtask, subtask },
+  props: {
+    task: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
-      selected: [2],
-      tasks: [
-        {
-          action: '15 min',
-          headline: '',
-          subtitle: '',
-          title: 'Ali Connors',
-        },
-        {
-          action: '2 hr',
-          headline: 'Summer BBQ',
-          subtitle: 'Wish I could come, but I\'m out of town this weekend.',
-          title: 'me, Scrott, Jennifer',
-        },
-        {
-          action: '6 hr',
-          headline: 'Oui oui',
-          subtitle: 'Do you have Paris recommendations? Have you ever been?',
-          title: 'Sandra Adams',
-        },
-        {
-          action: '12 hr',
-          headline: 'Birthday gift',
-          subtitle: 'Have any ideas about what we should get Heidi for her birthday?',
-          title: 'Trevor Hansen',
-        },
-        {
-          action: '18hr',
-          headline: 'Recipe to try',
-          subtitle: 'We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
-          title: 'Britta Holt',
-        },
-      ],
+
+      newSubtask: true,
+      selected: [],
+
     };
+  },
+  computed: {
+    ...mapState('users', { isUserLoading: 'isFindPending' }),
+
+    Subtasks: () => models.api.Subtask,
+    subtasks: vm => vm.Subtasks.findInStore({ query: { parentTask: vm.task._id } }).data,
+  },
+  created() {
+    this.Subtasks.find();
+    console.log(this.Subtasks.find());
+  },
+  methods: {
+    uuid() {
+      return Math.random().toString(36).slice(-6);
+    },
+    selectedItem(value) {
+      this.selected = value;
+    },
+    cancel(value) {
+      console.log('toto', value);
+      this.newSubtask = value;
+    },
+    addSubtask() {
+      this.newSubtask = !this.newSubtask;
+    }
   }
 };
+
 </script>
 
 <style>

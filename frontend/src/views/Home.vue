@@ -1,29 +1,33 @@
 <template>
-  <div>
-    <v-row>
+  <v-row class="mt-3">
+    <draggable class="row">
       <v-col
         v-for="(board,index) in boards"
-        :key="board.name + index"
+        :key=" index"
         md="2"
         cols="6"
       >
         <board :board="board" />
       </v-col>
+
       <v-col
         v-if="newboard"
-        class="d-flex  align-center"
+        class="d-flex  "
         md="2"
         cols="6"
       >
         <v-btn
-          fab
+          color="#c1c7d054"
+
           dark
-          color="indigo"
+          block
+          elevation="0"
           @click="addBoard()"
         >
           <v-icon dark>
             mdi-plus
           </v-icon>
+          Add board
         </v-btn>
       </v-col>
       <v-col
@@ -33,8 +37,8 @@
       >
         <new-board-form @cancel="cancel" />
       </v-col>
-    </v-row>
-  </div>
+    </draggable>
+  </v-row>
 </template>
 
 <script>
@@ -42,10 +46,11 @@ import { mapState } from 'vuex';
 import { models } from 'feathers-vuex';
 import board from '@/components/board.vue';
 import newBoardForm from '@/components/NewBoardForm.vue';
+import draggable from 'vuedraggable';
 
 export default {
   name: 'Home',
-  components: { board, newBoardForm },
+  components: { board, newBoardForm, draggable },
   data: () => ({
     newboard: true,
   }),
