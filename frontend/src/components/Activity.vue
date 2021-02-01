@@ -13,7 +13,7 @@
         label
         pill
         small
-        class="ma-2 text-bold"
+        class="mr-0 text-bold"
         color="primary"
       >
         <strong v-if="tasks.length < 1">  {{ tasks.length }} task</strong>
@@ -24,7 +24,7 @@
       <v-text-field
         v-model="editActivity.activityName"
         background-color="#ebecf0"
-        class="text-subtitle-1"
+        class="text-subtitle-1 rounded0"
         solo
         flat
         hide-details
@@ -113,11 +113,19 @@ export default {
       this.newtask = !this.newtask;
     },
 
-    updateActivity() {
-      this.editActivity.update();
+    async updateActivity() {
+      try {
+        await this.editActivity.update();
+      } catch (error) {
+        this.editActivityError = error.message;
+      }
     },
-    removeActivity() {
-      this.editActivity.remove();
+    async removeActivity() {
+      try {
+        await this.editActivity.remove();
+      } catch (error) {
+        this.removeActivityError = error.message;
+      }
     }
   }
 };

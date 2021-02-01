@@ -5,7 +5,7 @@
     tile
   >
     <v-card-title primary-title>
-      Subtasks
+      there is {{ subtasks.length }} subtasks
     </v-card-title>
 
     <!--     <v-progress-linear color="green" height="10" :value="(selected.length/subtasks.length)*100 ">
@@ -74,7 +74,6 @@ export default {
   },
   created() {
     this.Subtasks.find();
-    console.log(this.Subtasks.find());
   },
   methods: {
     uuid() {
@@ -84,7 +83,6 @@ export default {
       this.selected = value;
     },
     cancel(value) {
-      console.log('toto', value);
       this.newSubtask = value;
     },
     addSubtask() {

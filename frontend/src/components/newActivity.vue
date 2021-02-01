@@ -13,7 +13,12 @@
       <v-btn text color="error" @click="cancel">
         cancel
       </v-btn>
-      <v-btn text color="success" @click="addNewActivity">
+      <v-btn
+        :loading="isCreatePending"
+        text
+        color="success"
+        @click="addNewActivity"
+      >
         save
       </v-btn>
     </v-card-actions>

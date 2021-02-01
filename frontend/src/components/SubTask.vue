@@ -75,17 +75,22 @@ created() {
   this.editSubtask = new Subtask(this.subtask);
 },
 methods: {
-  updateSubtask() {
-    this.editSubtask.update();
+  async updateSubtask() {
+    try {
+      await this.editSubtask.update();
+    } catch (error) {
+      this.updateSubtaskError = error.message;
+    }
   },
-  removeSubtask() {
-    this.editSubtask.remove();
+
+  async removeSubtask() {
+    try {
+      await this.editSubtask.remove();
+    } catch (error) {
+      this.removeSubtaskError = error.message;
+    }
   }
 
 } };
 
 </script>
-
-<style>
-
-</style>

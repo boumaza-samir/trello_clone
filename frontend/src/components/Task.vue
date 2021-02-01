@@ -1,6 +1,13 @@
 <template>
   <v-container>
     <v-row>
+      <v-col class="pt-1 pl-1" cols="10">
+        <v-icon class="ml-2" small @click="removeTask()">
+          mdi-window-close
+        </v-icon>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col class="pa-0" cols="10">
         <v-text-field
           v-model="editTask.taskName"
@@ -17,14 +24,19 @@
           max-width="600"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              small
-              color="primary"
-              v-bind="attrs"
-              v-on="on"
+            <v-badge
+              :content="2"
+              rigth
+              overlap
             >
-              mdi-card-text-outline
-            </v-icon>
+              <v-icon
+                color="primary"
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-card-text-outline
+              </v-icon>
+            </v-badge>
           </template>
           <template v-slot:default="dialog">
             <v-card>
@@ -51,9 +63,6 @@
             </v-card>
           </template>
         </v-dialog>
-        <v-icon small @click="removeTask()">
-          mdi-delete
-        </v-icon>
       </v-col>
     </v-row>
   </v-container>
@@ -83,11 +92,19 @@ export default { name: 'task',
     this.editTask = new Task(this.task);
   },
   methods: {
-    updateTask() {
-      this.editTask.update();
+    async updateTask() {
+      try {
+        await this.editTask.update();
+      } catch (error) {
+        this.updateTaskError = error.message;
+      }
     },
-    removeTask() {
-      this.editTask.remove();
+    async removeTask() {
+      try {
+        await this.editTask.remove();
+      } catch (error) {
+        this.removeTaskError = error.message;
+      }
     }
 
   } };

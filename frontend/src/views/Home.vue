@@ -55,7 +55,7 @@ export default {
     newboard: true,
   }),
   computed: {
-    ...mapState('users', { isUserLoading: 'isFindPending' }),
+    ...mapState('users', { isBoardLoading: 'isFindPending' }),
 
     Board: () => models.api.Board,
     boards: vm => vm.Board.findInStore().data,

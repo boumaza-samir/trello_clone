@@ -63,6 +63,7 @@ export default {
   },
   created() {
     this.Activities.find();
+    console.log('activities', this.activities);
   },
   methods: {
     uuid() {

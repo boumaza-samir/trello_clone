@@ -66,10 +66,18 @@
         </v-list>
       </v-menu>
     </v-app-bar>
-    <v-main :style="`background-image: url(${this.$route.params.img});background-size: cover;`">
+    <v-main class="px-4" :style="`background-image: url(${board[0] ? board[0].img : ''});background-size: cover;`">
       <v-container
+
         fluid
       >
+        <v-card elevation="0" color="transparent">
+          <v-card-title class="text-uppercase">
+            <v-icon v-if="board[0]" class="mr-4" @click="$router.go(-1)">
+              mdi-arrow-left
+            </v-icon>    {{ board[0] ? `${$route.name } : ${board[0].name}` : 'Select a board' }}
+          </v-card-title>
+        </v-card>
         <router-view />
       </v-container>
     </v-main>
@@ -78,6 +86,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
+import { models } from 'feathers-vuex';
 
 export default {
   name: 'App',
@@ -89,6 +98,13 @@ export default {
     ...mapGetters('auth', ['isAuthenticated']),
     ...mapState('auth', ['isLogoutPending']),
     ...mapState('auth', ['user']),
+    Board: () => models.api.Board,
+    board: vm => vm.Board.findInStore({ query: { _id: vm.$route.params.boardId } }).data,
+  },
+  created() {
+    const { Board } = models.api;
+    this.editBoard = new Board(this.board);
+    this.Board.find();
   },
   methods: {
     async logout() {

@@ -45,7 +45,6 @@ export default {
       this.$emit('cancel', true);
     },
     async addNewBoard() {
-      console.log('addNewBoard', this.newBoard);
       try {
         await this.newBoard.create();
         this.$emit('cancel', true);

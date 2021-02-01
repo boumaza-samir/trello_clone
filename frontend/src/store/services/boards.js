@@ -7,7 +7,7 @@ class Board extends BaseModel {
   // Define default properties here
   static instanceDefaults() {
     return {
-      img: 'https://loremflickr.com/320/240/dog',
+      img: 'https://picsum.photos/seed/picsum/768/1024',
       name: ''
     };
   }

@@ -15,13 +15,12 @@
 
     <v-text-field
       v-model="editBoard.name"
-      class="text-h5"
+      class="rounded-0 text-h5"
       flat
       hide-details
-      solo
+      solo-inverted
       @blur="updateBoard()"
     />
-    lol
     <v-card
       v-if="edit"
       height="250px"
@@ -92,15 +91,26 @@ export default {
     openBoard() {
       this.$router.push({ name: 'board', params: { boardId: this.board._id, img: this.editBoard.img } });
     },
-    updateBoard() {
-      console.log('lol', this.editBoard);
-      this.editBoard.update();
-    },
     bgChange() {
       this.edit = !this.edit;
     },
-    removeBoard() {
-      this.editBoard.remove();
+    isCreatePending() {
+      return this.editBoard.isCreatePending;
+    },
+
+    async updateBoard() {
+      try {
+        await this.editBoard.update();
+      } catch (error) {
+        this.updateBoardError = error.message;
+      }
+    },
+    async removeBoard() {
+      try {
+        await this.editBoard.remove();
+      } catch (error) {
+        this.removeBoardError = error.message;
+      }
     }
   }
 };
