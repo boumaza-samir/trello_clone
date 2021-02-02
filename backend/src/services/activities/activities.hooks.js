@@ -1,8 +1,8 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
-
+const {slowdown } = require('../../utils/');
 module.exports = {
   before: {
-    all: [authenticate('jwt')],
+    all: [authenticate('jwt'),slowdown],
     find: [],
     get: [],
     create: [],

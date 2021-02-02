@@ -1,9 +1,11 @@
 const { setField } = require('feathers-authentication-hooks');
 
+const { slowdown} = require('../../utils/');
+
 module.exports = {
 
   before: {
-    all: [],
+    all: [slowdown],
     find: [
       setField({
         from: 'params.user._id',

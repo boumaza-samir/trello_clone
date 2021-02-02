@@ -18,7 +18,6 @@
       >
         <v-btn
           color="#c1c7d054"
-
           dark
           block
           elevation="0"

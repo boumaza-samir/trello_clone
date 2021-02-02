@@ -1,5 +1,19 @@
 // Application hooks that run for every service
-
+const errors = require('@feathersjs/errors');
+const errorHandler = ctx => {
+  if (ctx.error) {
+    const error = ctx.error;
+    if (!error.code) {
+      const newError = new errors.GeneralError('server error');
+      ctx.error = newError;
+      return ctx;
+    }
+    if (error.code === 404) {
+      error.stack = null;
+    }
+    return ctx;
+  }
+};
 module.exports = {
   before: {
     all: [],
@@ -22,7 +36,7 @@ module.exports = {
   },
 
   error: {
-    all: [],
+    all: [errorHandler],
     find: [],
     get: [],
     create: [],

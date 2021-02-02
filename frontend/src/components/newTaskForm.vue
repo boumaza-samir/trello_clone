@@ -20,8 +20,9 @@
         <v-btn
           small
           text
+          :loading="newTask.isCreatePending"
           color="success"
-          @click="addNewTask"
+          @click="newTask.create().then(() => {newTask = new Task(); cancel()})"
         >
           save
         </v-btn>
@@ -41,14 +42,14 @@ export default {
       default: ''
     }
   },
+  data: () => ({
+    newTask: {}
+  }),
   computed: {
-    isCreatePending() {
-      return this.newTask.isCreatePending;
-    }
+    Task: () => models.api.Task,
   },
   created() {
-    const { Task } = models.api;
-    this.newTask = new Task({});
+    this.newTask = new this.Task();
     this.newTask.parentActivity = this.parentActivity;
   },
   methods: {

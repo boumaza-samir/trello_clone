@@ -1,18 +1,5 @@
 <template>
   <v-card>
-    <v-system-bar
-      color="primary"
-      dark
-      class="justify-space-between"
-    >
-      <v-icon @click="removeBoard()">
-        mdi-window-close
-      </v-icon>
-      <v-icon @click="bgChange">
-        mdi-dots-horizontal
-      </v-icon>
-    </v-system-bar>
-
     <v-text-field
       v-model="editBoard.name"
       class="rounded-0 text-h5"
@@ -39,7 +26,12 @@
         <v-btn text color="error" @click="bgChange">
           cancel
         </v-btn>
-        <v-btn text color="success" @click="updateBoard">
+        <v-btn
+          text
+          :loading="editBoard.isUpdatePending"
+          color="success"
+          @click="editBoard.update()"
+        >
           save
         </v-btn>
       </v-card-actions>
@@ -55,6 +47,12 @@
       <v-avatar size="16">
         <v-gravatar :email="user.email ? user.email : '' " />
       </v-avatar> <span class="ml-1 text-caption">{{ user.name }} - {{ board.updatedAt | moment("from") }}</span>
+      <v-spacer />
+      <v-btn :loading="editBoard.isRemovePending" icon @click="editBoard.remove()">
+        <v-icon>
+          mdi-delete
+        </v-icon>
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>

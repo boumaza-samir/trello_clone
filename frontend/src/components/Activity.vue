@@ -1,25 +1,16 @@
 <template>
   <v-card class="pa-2" color="#ebecf0">
-    <v-system-bar
-      color="#ebecf0"
-      dark
-      class="justify-space-between"
+    <v-chip
+      label
+      pill
+      small
+      class="mr-0 text-bold"
+      color="primary"
     >
-      <v-icon color="black" @click="removeActivity()">
-        mdi-window-close
-      </v-icon>
+      <strong v-if="tasks.length < 1">  {{ tasks.length }} task</strong>
+      <strong v-else>  {{ tasks.length }} tasks</strong>
+    </v-chip>
 
-      <v-chip
-        label
-        pill
-        small
-        class="mr-0 text-bold"
-        color="primary"
-      >
-        <strong v-if="tasks.length < 1">  {{ tasks.length }} task</strong>
-        <strong v-else>  {{ tasks.length }} tasks</strong>
-      </v-chip>
-    </v-system-bar>
     <v-sheet>
       <v-text-field
         v-model="editActivity.activityName"
@@ -29,7 +20,8 @@
         flat
         hide-details
         label="edit board name"
-        @blur="updateActivity"
+        :loading="editActivity.isUpdatePending"
+        @blur="editActivity.update()"
       />
     </v-sheet>
     <v-btn
@@ -58,6 +50,13 @@
         />
       </v-card>
     </draggable>
+    <v-card-actions>
+      <v-btn icon :loading="editActivity.isRemovePending" @click="editActivity.remove()">
+        <v-icon>
+          mdi-delete
+        </v-icon>
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -96,10 +95,11 @@ export default {
 
     Task: () => models.api.Task,
     tasks: vm => vm.Task.findInStore({ query: { parentActivity: vm.activity._id } }).data,
+    Activities: () => models.api.Activities,
+
   },
   created() {
-    const { Activities } = models.api;
-    this.editActivity = new Activities(this.activity);
+    this.editActivity = new this.Activities(this.activity);
     this.Task.find();
   },
   methods: {
@@ -113,20 +113,6 @@ export default {
       this.newtask = !this.newtask;
     },
 
-    async updateActivity() {
-      try {
-        await this.editActivity.update();
-      } catch (error) {
-        this.editActivityError = error.message;
-      }
-    },
-    async removeActivity() {
-      try {
-        await this.editActivity.remove();
-      } catch (error) {
-        this.removeActivityError = error.message;
-      }
-    }
   }
 };
 </script>

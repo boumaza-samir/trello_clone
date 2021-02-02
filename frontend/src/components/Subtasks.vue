@@ -46,7 +46,6 @@
 <script>
 import newSubtask from '@/components/NewSubTaskForm.vue';
 import { models } from 'feathers-vuex';
-import { mapState } from 'vuex';
 import subtask from '@/components/SubTask.vue';
 
 export default {
@@ -60,15 +59,11 @@ export default {
   },
   data() {
     return {
-
       newSubtask: true,
       selected: [],
-
     };
   },
   computed: {
-    ...mapState('users', { isUserLoading: 'isFindPending' }),
-
     Subtasks: () => models.api.Subtask,
     subtasks: vm => vm.Subtasks.findInStore({ query: { parentTask: vm.task._id } }).data,
   },

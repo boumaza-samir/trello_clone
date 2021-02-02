@@ -14,10 +14,10 @@
         cancel
       </v-btn>
       <v-btn
-        :loading="isCreatePending"
+        :loading="newActivity.isCreatePending"
         text
         color="success"
-        @click="addNewActivity"
+        @click="newActivity.create().then( () => {newActivity = new Activities();cancel() })"
       >
         save
       </v-btn>
@@ -32,13 +32,10 @@ export default {
   name: 'new-activity',
 
   computed: {
-    isCreatePending() {
-      return this.newActivity.isCreatePending;
-    }
+    Activities: () => models.api.Activities,
   },
   created() {
-    const { Activities } = models.api;
-    this.newActivity = new Activities({});
+    this.newActivity = new this.Activities();
     this.newActivity.parentBoard = this.$route.params.boardId;
   },
   methods: {
@@ -46,15 +43,7 @@ export default {
     cancel() {
       this.$emit('cancel', true);
     },
-    async addNewActivity() {
-      console.log('addNewBoard', this.newActivity);
-      try {
-        await this.newActivity.create();
-        this.$emit('cancel', true);
-      } catch (error) {
-        this.newActivityError = error.message;
-      }
-    }
+
   }
 
 };

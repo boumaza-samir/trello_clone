@@ -17,7 +17,12 @@
       <v-btn text color="error" @click="cancel">
         cancel
       </v-btn>
-      <v-btn text color="success" @click="addNewBoard">
+      <v-btn
+        :loading="newBoard.isCreatePending"
+        text
+        color="success"
+        @click="newBoard.create().then( () => {newBoard = new Board()})"
+      >
         save
       </v-btn>
     </v-card-actions>
@@ -29,15 +34,14 @@ import { models } from 'feathers-vuex';
 
 export default {
   name: 'new-board-form',
-
+  data: () => ({
+    newBoard: {},
+  }),
   computed: {
-    isCreatePending() {
-      return this.newBoard.isCreatePending;
-    }
+    Board: () => models.api.Board,
   },
   created() {
-    const { Board } = models.api;
-    this.newBoard = new Board({});
+    this.newBoard = new this.Board();
   },
   methods: {
 

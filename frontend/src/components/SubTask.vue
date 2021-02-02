@@ -2,14 +2,11 @@
   <v-list-item :ripple="false">
     <template v-slot:default="{ active}">
       <v-list-item-content>
-        <v-system-bar
-          color="transparent"
-          height="30"
-        >
-          <v-icon medium @click.stop="removeSubtask">
+        <v-btn icon :loading="editSubtask.isRemovePending" @click.stop="editSubtask.remove() ">
+          <v-icon medium>
             mdi-close
           </v-icon>
-        </v-system-bar>
+        </v-btn>
 
         <v-list-item-title>
           <v-list-item-action class="my-0 mx-7">
@@ -22,8 +19,9 @@
               dense
               hide-details
               label="edit title"
+              :loading="editSubtask.isUpdatePending"
               @click.stop
-              @blur="updateSubtask"
+              @blur="editSubtask.update()"
             />
           </v-list-item-action>
         </v-list-item-title>
@@ -37,8 +35,9 @@
             outlined
             rows="2"
             hide-details
+            :loading="editSubtask.isUpdatePending"
             @click.stop
-            @blur="updateSubtask"
+            @blur="editSubtask.update()"
           />
         </v-list-item-subtitle>
       </v-list-item-content>
@@ -47,8 +46,9 @@
         <v-checkbox
           v-model="editSubtask.completed"
           :input-value="active"
+          :loading="editSubtask.isUpdatePending"
           @click.stop
-          @change="updateSubtask"
+          @change="editSubtask.update()"
         />
       </v-list-item-action>
     </template>
@@ -60,7 +60,6 @@ import { models } from 'feathers-vuex';
 
 export default { props: {
   subtask: {
-
     type: Object,
     default: () => {}
   }
@@ -70,27 +69,11 @@ data() {
     editSubtask: {},
   };
 },
-created() {
-  const { Subtask } = models.api;
-  this.editSubtask = new Subtask(this.subtask);
+computed: {
+  Subtask: () => models.api.Subtask,
 },
-methods: {
-  async updateSubtask() {
-    try {
-      await this.editSubtask.update();
-    } catch (error) {
-      this.updateSubtaskError = error.message;
-    }
-  },
-
-  async removeSubtask() {
-    try {
-      await this.editSubtask.remove();
-    } catch (error) {
-      this.removeSubtaskError = error.message;
-    }
-  }
-
+created() {
+  this.editSubtask = new this.Subtask(this.subtask);
 } };
 
 </script>

@@ -19,7 +19,12 @@
       <v-btn text color="error" @click="cancel">
         cancel
       </v-btn>
-      <v-btn text color="success" @click="addNewSubTask">
+      <v-btn
+        :loading="newSubtask.isCreatePending"
+        text
+        color="success"
+        @click="newSubtask.create().then(()=> {newSubtask = new Subtask(); cancel()})"
+      >
         save
       </v-btn>
     </v-card-actions>
@@ -37,35 +42,23 @@ export default {
       default: () => {}
     }
   },
+  data: () => ({
+    newSubtask: {},
+  }),
   computed: {
-    isCreatePending() {
-      return this.newBoard.isCreatePending;
-    }
+    Subtask: () => models.api.Subtask,
   },
   created() {
-    console.log(models.api);
-    const { Subtask } = models.api;
-    this.newSubtask = new Subtask({});
+    this.newSubtask = new this.Subtask();
     this.newSubtask.completed = false;
     this.newSubtask.parentTask = this.task._id;
-    console.log('this.task', this.newSubtask);
   },
   methods: {
 
     cancel() {
       this.$emit('cancel', true);
     },
-    async addNewSubTask() {
-      console.log('addNewBoard', this.newSubtask);
-      try {
-        await this.newSubtask.create();
-        this.cancel();
-      } catch (error) {
-        console.log(error.message);
-        this.newBoardError = error.message;
-      }
-    }
-  }
 
+  }
 };
 </script>

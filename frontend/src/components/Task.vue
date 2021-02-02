@@ -2,9 +2,11 @@
   <v-container>
     <v-row>
       <v-col class="pt-1 pl-1" cols="10">
-        <v-icon class="ml-2" small @click="removeTask()">
-          mdi-window-close
-        </v-icon>
+        <v-btn icon :loading="editTask.isRemovePending" @click="editTask.remove()">
+          <v-icon class="ml-2" small>
+            mdi-window-close
+          </v-icon>
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -14,9 +16,10 @@
           class="text-subtitle-1 "
           solo
           flat
+          :loading="editTask.isUpdatePending"
           hide-details
           label="edit board name"
-          @blur="updateTask"
+          @blur="editTask.update()"
         />
       </v-col>
       <v-col class="d-flex pa-0 justify-center align-center">
@@ -80,16 +83,16 @@ export default { name: 'task',
       default: () => {}
     }
   },
-  data() {
-    return {
-      editTask: {},
-      name: '',
-    };
+  data: () => ({
+    editTask: {},
+    name: '',
+  }),
+  computed: {
+    Task: () => models.api.Task,
   },
 
   created() {
-    const { Task } = models.api;
-    this.editTask = new Task(this.task);
+    this.editTask = new this.Task(this.task);
   },
   methods: {
     async updateTask() {
