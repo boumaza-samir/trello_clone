@@ -1,0 +1,9 @@
+GET http://localhost:3030/boards/6019952753eddc58344108dc
+Accept: application/json
+Authorization: {{auth_token}}
+###
+
+GET http://localhost:3030/activities/601b129febe116ac3b060316
+Accept: application/json
+Authorization: {{auth_token}}
+###

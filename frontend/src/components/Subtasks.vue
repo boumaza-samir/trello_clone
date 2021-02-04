@@ -65,7 +65,7 @@ export default {
   },
   computed: {
     Subtasks: () => models.api.Subtask,
-    subtasks: vm => vm.Subtasks.findInStore({ query: { parentTask: vm.task._id } }).data,
+    subtasks: vm => vm.Subtasks.findInStore({ query: { taskId: vm.task._id } }).data,
   },
   created() {
     this.Subtasks.find();

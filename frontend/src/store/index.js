@@ -20,8 +20,25 @@ const servicePlugins = requireModule
   .map(modulePath => requireModule(modulePath).default);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
+  state: { messages: [] },
+  mutations: {
+    PUSH_SNACK: (stateIn, payload) => {
+      stateIn.messages.push(payload);
+    },
+
+    POP_SNACK: stateIn => {
+      stateIn.messages.pop();
+    },
+  },
+  actions: {
+    pushSnack(context, snack) {
+      context.commit('PUSH_SNACK', snack);
+    },
+
+    popSnack(context) {
+      context.commit('POP_SNACK');
+    },
+
+  },
   plugins: [...servicePlugins, auth]
 });

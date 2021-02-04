@@ -1,5 +1,5 @@
 // subtask-model.js - A mongoose model
-// 
+//
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 module.exports = function (app) {
@@ -10,9 +10,10 @@ module.exports = function (app) {
 
     title: { type: String, required: true },
     comment: { type: String },
-    parentTask: { type: String },
+    taskId: { type: Schema.Types.ObjectId, ref: 'tasks' },
     completed: { type: Boolean }
   }, {
+    versionKey:false,
     timestamps: true
   });
 

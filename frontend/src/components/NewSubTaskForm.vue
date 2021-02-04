@@ -51,7 +51,7 @@ export default {
   created() {
     this.newSubtask = new this.Subtask();
     this.newSubtask.completed = false;
-    this.newSubtask.parentTask = this.task._id;
+    this.newSubtask.taskId = this.task._id;
   },
   methods: {
 

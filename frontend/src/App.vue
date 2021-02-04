@@ -3,6 +3,7 @@
     :style="`background-image: url('https://cdn.pixabay.com/photo/2013/07/13/12/08/background-159244__340.png')
   ;background-size: cover;`"
   >
+    <snack />
     <v-app-bar
       app
       color="primary"
@@ -48,7 +49,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-gravatar :email="user.email ? user.email : '' " />
+            <v-gravatar :email="user ? user.email : '' " />
           </v-avatar>
         </template>
 
@@ -66,18 +67,12 @@
         </v-list>
       </v-menu>
     </v-app-bar>
-    <v-main class="px-4" :style="`background-image: url(${board[0] ? board[0].img : ''});background-size: cover;`">
-      <v-container
 
-        fluid
-      >
-        <v-card elevation="0" color="transparent">
-          <v-card-title class="text-uppercase">
-            <v-icon v-if="board[0]" class="mr-4" @click="$router.go(-1)">
-              mdi-arrow-left
-            </v-icon>    {{ board[0] ? `${$route.name } : ${board[0].name}` : 'Select a board' }}
-          </v-card-title>
-        </v-card>
+    <v-main
+      class="px-4"
+      :style="`background-image: url(${board[0] ? board[0].img : ''});background-size: cover;`"
+    >
+      <v-container fluid>
         <router-view />
       </v-container>
     </v-main>
@@ -87,13 +82,11 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import { models } from 'feathers-vuex';
+import Snack from '@/components/Snack.vue';
 
 export default {
   name: 'App',
-
-  data: () => ({
-    //
-  }),
+  components: { Snack },
   computed: {
     ...mapGetters('auth', ['isAuthenticated']),
     ...mapState('auth', ['isLogoutPending']),

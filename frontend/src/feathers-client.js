@@ -5,8 +5,25 @@ import auth from '@feathersjs/authentication-client';
 import io from 'socket.io-client';
 import feathersVuex from 'feathers-vuex';
 
+const LEVEL = {
+  SUCCESS: 'success',
+  INFO: 'info',
+  WARNING: 'warning',
+  ERROR: 'error',
+};
 const socket = io('http://localhost:3030', { transports: ['websocket'] });
-
+const HandelError = context => {
+  const { error } = context;
+  const snack = { ...error };
+  delete snack.hook;
+  if (error.name !== 'NotFound') {
+    // eslint-disable-next-line no-use-before-define
+    BaseModel.store.dispatch('pushSnack', {
+      snack,
+      level: LEVEL.ERROR,
+    });
+  }
+};
 const feathersClient = feathers()
   .configure(socketio(socket))
   .configure(auth({ storage: window.localStorage }))
@@ -30,7 +47,7 @@ const feathersClient = feathers()
       remove: []
     },
     error: {
-      all: [],
+      all: [HandelError],
       find: [],
       get: [],
       create: [],
@@ -39,7 +56,7 @@ const feathersClient = feathers()
       remove: []
     }
   });
-
+// feathersClient.service('boards').timeout = 0;
 export default feathersClient;
 
 // Setting up feathers-vuex

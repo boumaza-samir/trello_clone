@@ -5,13 +5,14 @@
 module.exports = function (app) {
   const modelName = 'boards';
   const mongooseClient = app.get('mongooseClient');
-  const mongoose = require('mongoose');
+  const { Schema } = mongooseClient;
   const schema = new mongooseClient.Schema({
-    name: { type: String },
+    name: { type: String,required: true },
     img: { type: String },
-    ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }
+    ownerId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
 
   }, {
+    versionKey:false,
     timestamps: true
   });
 

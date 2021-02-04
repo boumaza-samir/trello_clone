@@ -8,7 +8,7 @@ class Task extends BaseModel {
   static instanceDefaults() {
     return {
       taskName: '',
-      parentActivity: ''
+      activityId: ''
     };
   }
 }

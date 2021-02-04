@@ -19,7 +19,7 @@
           :loading="editTask.isUpdatePending"
           hide-details
           label="edit board name"
-          @blur="editTask.update()"
+          @blur="editTask.save()"
         />
       </v-col>
       <v-col class="d-flex pa-0 justify-center align-center">

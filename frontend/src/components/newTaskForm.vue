@@ -37,7 +37,7 @@ import { models } from 'feathers-vuex';
 export default {
   name: 'newtaskform',
   props: {
-    parentActivity: {
+    activityId: {
       type: String,
       default: ''
     }
@@ -50,20 +50,12 @@ export default {
   },
   created() {
     this.newTask = new this.Task();
-    this.newTask.parentActivity = this.parentActivity;
+    this.newTask.activityId = this.activityId;
   },
   methods: {
 
     cancel() {
       this.$emit('cancel', true);
-    },
-    async addNewTask() {
-      try {
-        await this.newTask.create();
-        this.cancel();
-      } catch (error) {
-        this.newBoardError = error.message;
-      }
     }
   }
 

@@ -3,7 +3,7 @@
     <v-row class="mt-3">
       <draggable class="row">
         <v-col
-          v-for="(activity,index) in activities"
+          v-for="(activity,index) in board.activities"
           :key="index + uuid()"
           md="2"
           cols="6"
@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+
 import { models } from 'feathers-vuex';
 import activity from '@/components/Activity.vue';
 import newActivity from '@/components/newActivity.vue';
@@ -52,18 +52,20 @@ import draggable from 'vuedraggable';
 export default {
   name: 'Board',
   components: { activity, newActivity, draggable },
+  props: ['boardId'],
   data: () => ({
     newActivity: true,
   }),
   computed: {
-    ...mapState('users', { isUserLoading: 'isFindPending' }),
-
-    Activities: () => models.api.Activities,
-    activities: vm => vm.Activities.findInStore({ query: { parentBoard: vm.$route.params.boardId } }).data,
+    Board: () => models.api.Board,
+    board: vm => vm.Board.getFromStore(vm.boardId) || new vm.Board(),
   },
-  created() {
-    this.Activities.find();
-    console.log('activities', this.activities);
+  async created() {
+    try {
+      await this.Board.get(this.boardId);
+    } catch (e) {
+      await this.$router.replace({ name: 'not-found' });
+    }
   },
   methods: {
     uuid() {

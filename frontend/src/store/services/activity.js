@@ -7,9 +7,21 @@ class Activities extends BaseModel {
   // Define default properties here
   static instanceDefaults() {
     return {
-      activityName: '',
-      parentBoard: ''
+      activityName: ''
     };
+  }
+
+  static setupInstance(data, { models }) {
+    if (data.tasks?.data) {
+      console.log('task =', data.tasks);
+      data.tasks.data.forEach(task => new models.api.Task(task));
+      delete data.tasks;
+    }
+    return data;
+  }
+
+  get tasks() {
+    return this.constructor.store.getters['tasks/find']({ query: { activityId: this._id } }).data;
   }
 }
 const servicePath = 'activities';
@@ -17,37 +29,6 @@ const servicePlugin = makeServicePlugin({
   Model: Activities,
   service: feathersClient.service(servicePath),
   servicePath
-});
-
-// Setup the client-side Feathers hooks.
-feathersClient.service(servicePath).hooks({
-  before: {
-    all: [],
-    find: [],
-    get: [],
-    create: [],
-    update: [],
-    patch: [],
-    remove: []
-  },
-  after: {
-    all: [],
-    find: [],
-    get: [],
-    create: [],
-    update: [],
-    patch: [],
-    remove: []
-  },
-  error: {
-    all: [],
-    find: [],
-    get: [],
-    create: [],
-    update: [],
-    patch: [],
-    remove: []
-  }
 });
 
 export default servicePlugin;

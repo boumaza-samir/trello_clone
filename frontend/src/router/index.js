@@ -1,10 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Signup from '@/views/Signup.vue';
-import Login from '@/views/Login.vue';
-import Home from '@/views/Home.vue';
 import Store from '@/store';
-import Board from '@/views/Board.vue';
+import Notfound from '@/views/Notfound.vue';
 
 Vue.use(VueRouter);
 
@@ -12,22 +9,28 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
   },
   {
     path: '/signup',
     name: 'Signup',
-    component: Signup,
+    component: () => import(/* webpackChunkName: "signup" */ '@/views/Signup.vue'),
   },
   {
     path: '/login',
     name: 'login',
-    component: Login,
+    component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
     path: '/board/:boardId',
     name: 'board',
-    component: Board,
+    props: true,
+    component: () => import(/* webpackChunkName: "board" */ '@/views/Board.vue'),
+  },
+  {
+    path: '/404',
+    name: 'not-found',
+    component: Notfound,
   },
   {
     path: '/about',
@@ -44,21 +47,29 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
 // Global session route dispatching
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  // validate URL
+  const link = router.resolve(to.path);
+  if (link.resolved.matched.length === 0) {
+    next('/404');
+    return;
+  }
   // Authenticate with the local email/password strategy
-  Store.dispatch('auth/authenticate').then(() => {
-    if (['/signup', '/login'].includes(to.path)) {
+  const wantsAccess = ['/signup', '/login'].includes(to.path);
+  try {
+    await Store.dispatch('auth/authenticate');
+    if (wantsAccess) {
       next('/');
-    } else {
-      next();
+      return;
     }
-  }).catch(() => {
-    if (['/signup', '/login'].includes(to.path)) {
-      next();
-    } else {
+  } catch (e) {
+    if (!wantsAccess) {
       next('/login');
+      return;
     }
-  });
+  }
+  next();
 });
 export default router;

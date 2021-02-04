@@ -21,7 +21,7 @@
         :loading="newBoard.isCreatePending"
         text
         color="success"
-        @click="newBoard.create().then( () => {newBoard = new Board()})"
+        @click="newBoard.create().then( () => {newBoard = new Board(); cancel(); })"
       >
         save
       </v-btn>
@@ -41,21 +41,14 @@ export default {
     Board: () => models.api.Board,
   },
   created() {
-    this.newBoard = new this.Board();
+    this.newBoard = new this.Board({ toto: 5 });
   },
   methods: {
 
     cancel() {
       this.$emit('cancel', true);
     },
-    async addNewBoard() {
-      try {
-        await this.newBoard.create();
-        this.$emit('cancel', true);
-      } catch (error) {
-        this.newBoardError = error.message;
-      }
-    }
+
   }
 
 };

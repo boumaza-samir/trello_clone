@@ -12,6 +12,7 @@ module.exports = function (app) {
     name: { type: String }
 
   }, {
+    versionKey:false,
     timestamps: true
   });
 

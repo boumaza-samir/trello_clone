@@ -36,7 +36,7 @@ export default {
   },
   created() {
     this.newActivity = new this.Activities();
-    this.newActivity.parentBoard = this.$route.params.boardId;
+    this.newActivity.boardId = this.$route.params.boardId;
   },
   methods: {
 

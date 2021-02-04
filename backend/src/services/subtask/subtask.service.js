@@ -6,6 +6,7 @@ const hooks = require('./subtask.hooks');
 module.exports = function (app) {
   const options = {
     Model: createModel(app),
+    multi: ['remove'],
     paginate: app.get('paginate')
   };
 

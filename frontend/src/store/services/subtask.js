@@ -10,7 +10,7 @@ class Subtask extends BaseModel {
       action: '',
       comment: '',
       completed: '',
-      parentTask: '',
+      taskId: '',
     };
   }
 }

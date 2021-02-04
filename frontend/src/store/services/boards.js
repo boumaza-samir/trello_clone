@@ -11,6 +11,18 @@ class Board extends BaseModel {
       name: ''
     };
   }
+
+  static setupInstance(data, { models }) {
+    if (data.activity) {
+      data.activity.data.forEach(activity => new models.api.Activities(activity));
+      delete data.activity;
+    }
+    return data;
+  }
+
+  get activities() {
+    return this.constructor.store.getters['activities/find']({ query: { boardId: this._id } }).data;
+  }
 }
 const servicePath = 'boards';
 const servicePlugin = makeServicePlugin({

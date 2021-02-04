@@ -1,5 +1,5 @@
 // Activities-model.js - A mongoose model
-// 
+//
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 module.exports = function (app) {
@@ -8,9 +8,10 @@ module.exports = function (app) {
   const { Schema } = mongooseClient;
   const schema = new Schema({
     activityName: { type: String },
-    parentBoard: { type: String }
+    boardId: { type: Schema.Types.ObjectId, ref: 'boards' },
 
   }, {
+    versionKey:false,
     timestamps: true
   });
 

@@ -1,5 +1,5 @@
 // tasks-model.js - A mongoose model
-// 
+//
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 module.exports = function (app) {
@@ -8,8 +8,9 @@ module.exports = function (app) {
   const { Schema } = mongooseClient;
   const schema = new Schema({
     taskName: { type: String },
-    parentActivity: { type: String },
+    activityId: { type: Schema.Types.ObjectId, ref: 'activities' },
   }, {
+    versionKey:false,
     timestamps: true
   });
 

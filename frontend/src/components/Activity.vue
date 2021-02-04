@@ -7,8 +7,8 @@
       class="mr-0 text-bold"
       color="primary"
     >
-      <strong v-if="tasks.length < 1">  {{ tasks.length }} task</strong>
-      <strong v-else>  {{ tasks.length }} tasks</strong>
+      <strong v-if="activity.tasks.length < 1">  {{ activity.tasks.length }} task</strong>
+      <strong v-else>  {{ activity.tasks.length }} tasks</strong>
     </v-chip>
 
     <v-sheet>
@@ -37,10 +37,10 @@
       </v-icon>
       add task
     </v-btn>
-    <newtaskform v-if="!newtask" :parent-activity="activity._id" @cancel="cancel" />
+    <newtaskform v-if="!newtask" :activity-id="activity._id" @cancel="cancel" />
     <draggable class="card">
       <v-card
-        v-for="(task,index) in tasks"
+        v-for="(task,index) in activity.tasks"
         :key="index + uuid()"
         class="my-2"
         elevation="1"
@@ -62,7 +62,7 @@
 
 <script>
 import { models } from 'feathers-vuex';
-import { mapState } from 'vuex';
+
 import task from '@/components/Task.vue';
 import newtaskform from '@/components/newTaskForm.vue';
 import draggable from 'vuedraggable';
@@ -89,18 +89,10 @@ export default {
   },
 
   computed: {
-
-    ...mapState('auth', ['user']),
-    ...mapState('users', { isUserLoading: 'isFindPending' }),
-
-    Task: () => models.api.Task,
-    tasks: vm => vm.Task.findInStore({ query: { parentActivity: vm.activity._id } }).data,
     Activities: () => models.api.Activities,
-
   },
   created() {
-    this.editActivity = new this.Activities(this.activity);
-    this.Task.find();
+    this.editActivity = this.activity.clone();
   },
   methods: {
     uuid() {

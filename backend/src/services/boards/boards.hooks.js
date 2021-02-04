@@ -1,41 +1,72 @@
-const { setField } = require('feathers-authentication-hooks');
+const { authenticate } = require('@feathersjs/authentication').hooks;
+const { fastJoin } = require('feathers-hooks-common');
 
-const { slowdown} = require('../../utils/');
+const { restrictToOwner, setOwnerField, slowdown, removeDanglingChildren } = require('../../utils/');
 
+const activityResolver = {
+  joins: {
+    activities: () => async (board, context) => {
+      const { method,
+        params: {
+          $eager
+        } } = context;
+      if (method === 'get' || $eager) {
+        board.activity = (await context.app.services['activities'].find({
+          query: { boardId: board._id },
+          $eager: true,
+        }));
+      }
+    },
+  }
+};
+
+const ownerResolver = {
+  joins: {
+    owner: () => async (board, context) => {
+      board.owner = (await context.app.services['users'].get(board.ownerId, {
+        query: { $select: ['name', 'email'] }
+      }));
+      return board;
+    }
+  }
+};
+const query = {
+  owner: true,
+  activities: true,
+};
 module.exports = {
-
   before: {
-    all: [slowdown],
+    all: [authenticate('jwt'), slowdown],
     find: [
-      setField({
-        from: 'params.user._id',
-        as: 'params.query.ownerId'
-      })
+      restrictToOwner
     ],
     get: [
-      setField({
-        from: 'params.user._id',
-        as: 'params.query.userId'
-      })
+      restrictToOwner
     ],
     create: [
-      setField({
-        from: 'params.user._id',
-        as: 'data.ownerId'
-      })
+      setOwnerField
     ],
-    update: [],
-    patch: [],
-    remove: []
+    update: [
+      setOwnerField,
+      restrictToOwner
+    ],
+    patch: [
+      setOwnerField,
+      restrictToOwner
+    ],
+    remove: [
+
+    ]
   },
+
   after: {
-    all: [],
+    all: [fastJoin(ownerResolver, query)],
     find: [],
-    get: [],
+    get: [fastJoin(activityResolver, query)],
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [removeDanglingChildren('activities', 'boardId')]
   },
 
   error: {
@@ -47,5 +78,4 @@ module.exports = {
     patch: [],
     remove: []
   }
-
 };

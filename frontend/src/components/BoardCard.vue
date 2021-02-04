@@ -1,13 +1,25 @@
 <template>
-  <v-card>
-    <v-text-field
-      v-model="editBoard.name"
-      class="rounded-0 text-h5"
-      flat
-      hide-details
-      solo-inverted
-      @blur="updateBoard()"
-    />
+  <v-card hover>
+    <v-card-title>
+      <v-text-field
+        v-model="editBoard.name"
+        class="rounded-0 text-h6"
+        flat
+        dense
+        color="transparent"
+        hide-details
+        solo
+        :loading="editBoard.isUpdatePending"
+        @blur="editBoard.update()"
+      >
+        <template v-slot:prepend>
+          <v-avatar size="30">
+            <v-gravatar :email="user.email ? user.email : '' " />
+          </v-avatar>
+        </template>
+      </v-text-field>
+    </v-card-title>
+
     <v-card
       v-if="edit"
       height="250px"
@@ -43,14 +55,15 @@
       height="250px"
       @click="openBoard"
     />
-    <v-card-actions>
-      <v-avatar size="16">
-        <v-gravatar :email="user.email ? user.email : '' " />
-      </v-avatar> <span class="ml-1 text-caption">{{ user.name }} - {{ board.updatedAt | moment("from") }}</span>
-      <v-spacer />
+    <v-card-actions class="justify-space-between">
       <v-btn :loading="editBoard.isRemovePending" icon @click="editBoard.remove()">
         <v-icon>
           mdi-delete
+        </v-icon>
+      </v-btn>
+      <v-btn icon>
+        <v-icon>
+          mdi-dots-vertical
         </v-icon>
       </v-btn>
     </v-card-actions>
@@ -62,10 +75,9 @@ import { models } from 'feathers-vuex';
 import { mapState } from 'vuex';
 
 export default {
-  name: 'board',
+  name: 'BoardCard',
 
   props: {
-
     board: {
       Type: Object,
       default: () => {}
@@ -80,36 +92,18 @@ export default {
   },
   computed: {
     ...mapState('auth', ['user']),
+    Board: () => models.api.Board,
   },
   created() {
-    const { Board } = models.api;
-    this.editBoard = new Board(this.board);
+    this.editBoard = new this.Board(this.board);
   },
   methods: {
     openBoard() {
-      this.$router.push({ name: 'board', params: { boardId: this.board._id, img: this.editBoard.img } });
+      this.$router.push({ name: 'board', params: { boardId: this.board._id } });
     },
     bgChange() {
       this.edit = !this.edit;
     },
-    isCreatePending() {
-      return this.editBoard.isCreatePending;
-    },
-
-    async updateBoard() {
-      try {
-        await this.editBoard.update();
-      } catch (error) {
-        this.updateBoardError = error.message;
-      }
-    },
-    async removeBoard() {
-      try {
-        await this.editBoard.remove();
-      } catch (error) {
-        this.removeBoardError = error.message;
-      }
-    }
   }
 };
 </script>

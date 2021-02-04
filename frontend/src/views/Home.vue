@@ -3,11 +3,11 @@
     <draggable class="row">
       <v-col
         v-for="(board,index) in boards"
-        :key=" index"
+        :key="uuid()+ index"
         md="2"
         cols="6"
       >
-        <board :board="board" />
+        <board-card :board="board" />
       </v-col>
 
       <v-col
@@ -43,13 +43,13 @@
 <script>
 import { mapState } from 'vuex';
 import { models } from 'feathers-vuex';
-import board from '@/components/board.vue';
+import BoardCard from '@/components/BoardCard.vue';
 import newBoardForm from '@/components/NewBoardForm.vue';
 import draggable from 'vuedraggable';
 
 export default {
   name: 'Home',
-  components: { board, newBoardForm, draggable },
+  components: { BoardCard, newBoardForm, draggable },
   data: () => ({
     newboard: true,
   }),
@@ -63,6 +63,9 @@ export default {
     this.Board.find();
   },
   methods: {
+    uuid() {
+      return Math.random().toString(36).slice(-6);
+    },
     cancel(value) {
       this.newboard = value;
     },
